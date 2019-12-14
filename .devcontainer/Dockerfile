@@ -22,6 +22,7 @@ ARG USER_GID=$USER_UID
 # COPY requirements.txt /tmp/pip-tmp/
 
 # Configure apt and install packages
+COPY requirements-dev.txt ./requirements-dev.txt
 RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
     #
@@ -29,7 +30,8 @@ RUN apt-get update \
     && apt-get -y install git iproute2 procps lsb-release \
     #
     # Install pylint
-    && pip --disable-pip-version-check --no-cache-dir install pylint -r ../requirements-dev.txt \
+    && pip --disable-pip-version-check --no-cache-dir install pylint \
+    && pip install --no-cache-dir --upgrade -r requirements-dev.txt \
     #
     # Update Python environment based on requirements.txt
     # && pip --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt \

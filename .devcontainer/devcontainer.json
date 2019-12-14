@@ -16,7 +16,7 @@
 	},
 
 	// Uncomment the next line if you want to publish any ports.
-	// "appPort": [],
+	"appPort": [4000, 4001, 8889, 8001],
 
 	// Uncomment the next line to run commands after the container is created.
 	// "postCreateCommand": "pip install -r requirements.txt",
@@ -28,6 +28,7 @@
 
 	// Add the IDs of extensions you want installed when the container is created in the array below.
 	"extensions": [
-		"ms-python.python"
+		"ms-python.python",
+		"eamodio.gitlens",
 	]
 }
