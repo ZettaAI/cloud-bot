@@ -32,6 +32,7 @@ RUN apt-get update \
     # Install pylint
     && pip --disable-pip-version-check --no-cache-dir install pylint \
     && pip install --no-cache-dir --upgrade -r requirements-dev.txt \
+    && pip install --no-cache-dir --upgrade -r requirements.txt \
     #
     # Update Python environment based on requirements.txt
     # && pip --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt \
