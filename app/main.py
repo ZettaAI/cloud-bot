@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+
 class Challenge(BaseModel):
     token: str
     challenge: str
