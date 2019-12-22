@@ -1,21 +1,11 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-
-app = FastAPI()
-
-
-class Challenge(BaseModel):
-    token: str
-    challenge: str
-    type: str
+from starlette.applications import Starlette
+from starlette.responses import JSONResponse
+from starlette.routing import Route
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+async def homepage(request):
+    return JSONResponse({"hello": "world"})
 
 
-@app.post("/events")
-def challenge(data: Challenge):
-    print(data)
-    return data.challenge
+app = Starlette(debug=True, routes=[Route("/", homepage),])
+

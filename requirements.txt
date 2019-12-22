@@ -1,4 +1,6 @@
 slackclient
-fastapi
+starlette
 uvicorn
 google-cloud-storage
+cloud-volume
+slackeventsapi
