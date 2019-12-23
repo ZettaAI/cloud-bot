@@ -1,6 +1,5 @@
+cloud-volume
 slackclient
 starlette
 uvicorn
 google-cloud-storage
-cloud-volume
-slackeventsapi
