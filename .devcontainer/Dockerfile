@@ -32,15 +32,6 @@ RUN apt-get update \
     procps lsb-release \
     curl apt-transport-https \
     build-essential libboost-dev \
-    # GOOGLE-CLOUD-SDK
-    && pip install --no-cache-dir --upgrade crcmod \
-    && echo "deb https://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -c -s) main" > /etc/apt/sources.list.d/google-cloud-sdk.list \
-    && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
-    && apt-get update \
-    && apt-get install -y google-cloud-sdk \    
-    #
-    # need numpy for cloud-volume / fpzip error
-    && pip install --no-cache-dir --upgrade numpy \
     && pip install --no-cache-dir --upgrade -r requirements.txt \
     && pip install --no-cache-dir --upgrade -r requirements-dev.txt \
     #

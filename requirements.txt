@@ -1,6 +1,3 @@
-cloud-volume
-slackclient
 starlette
 uvicorn
 pika
-google-cloud-storage

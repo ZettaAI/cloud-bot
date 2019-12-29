@@ -15,6 +15,10 @@ from .middlewares import VerifySlackSignature
 
 config = Config("deploy.env")
 DEBUG = config("DEBUG", cast=bool, default=False)
+AMQP_CREDS = pika.credentials.PlainCredentials(
+    config.get("AMQP_USERNAME", "guest"), config.get("AMQP_PASSWORD", "guest")
+)
+AMQP_SERVICE_HOST = config.get("AMQP_SERVICE_HOST", "localhost")
 
 
 def publish(connection, message):
@@ -41,7 +45,7 @@ routes = [
 middleware = [Middleware(VerifySlackSignature)]
 app = Starlette(debug=DEBUG, routes=routes, middleware=middleware)
 app.state.exchange_cnxn = pika.BlockingConnection(
-    pika.ConnectionParameters(host="172.17.0.4")
+    pika.ConnectionParameters(host=AMQP_SERVICE_HOST, credentials=AMQP_CREDS)
 )
 app.state.SLACK_API_TOKEN = config("SLACK_API_TOKEN", cast=Secret)
 app.state.SLACK_SIGNING_SECRET = config("SLACK_SIGNING_SECRET", cast=Secret)
