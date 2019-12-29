@@ -47,6 +47,5 @@ app = Starlette(debug=DEBUG, routes=routes, middleware=middleware)
 app.state.exchange_cnxn = pika.BlockingConnection(
     pika.ConnectionParameters(host=AMQP_SERVICE_HOST, credentials=AMQP_CREDS)
 )
-app.state.SLACK_API_TOKEN = config("SLACK_API_TOKEN", cast=Secret)
 app.state.SLACK_SIGNING_SECRET = config("SLACK_SIGNING_SECRET", cast=Secret)
 
