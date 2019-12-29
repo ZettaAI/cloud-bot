@@ -1,4 +1,3 @@
-import sys
 from json import dumps
 
 import pika
