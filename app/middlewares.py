@@ -13,10 +13,11 @@ class VerifySlackSignature(BaseHTTPMiddleware):
         if "/events" in request.url.path:
             timestamp = request.headers.get("X-Slack-Request-Timestamp")
             if abs(time() - int(timestamp)) > 60 * 5:
-                return False, Response("Invalid request timestamp.", status_code=403)
+                return Response("Invalid request timestamp.", status_code=403)
 
-            request.state.json = loads(await request.body())
-            if not verify_request(request):
-                return False, Response("Invalid request.", status_code=403)
+            req_bytes = await request.body()
+            request.state.json = loads(req_bytes)
+            if not verify_request(request, req_bytes):
+                return Response("Invalid request.", status_code=403)
         return await call_next(request)
 
