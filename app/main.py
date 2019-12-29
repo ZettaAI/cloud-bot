@@ -4,7 +4,7 @@ import pika
 from starlette.config import Config
 from starlette.routing import Route
 from starlette.requests import Request
-from starlette.responses import PlainTextResponse
+from starlette.responses import Response
 from starlette.responses import JSONResponse
 from starlette.middleware import Middleware
 from starlette.applications import Starlette
@@ -28,13 +28,13 @@ def publish(connection, message):
 
 
 async def homepage(request: Request):
-    return PlainTextResponse("helloooo!")
+    return Response()
 
 
 async def mention(request: Request):
     print(request.state.json)
     publish(request.app.state.exchange_cnxn, dumps(request.state.json))
-    return PlainTextResponse("helloooo!")
+    return Response()
 
 
 routes = [
