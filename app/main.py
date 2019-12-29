@@ -16,9 +16,10 @@ from .middlewares import VerifySlackSignature
 config = Config("deploy.env")
 DEBUG = config("DEBUG", cast=bool, default=False)
 AMQP_CREDS = pika.credentials.PlainCredentials(
-    config.get("AMQP_USERNAME", "guest"), config.get("AMQP_PASSWORD", "guest")
+    config.get("AMQP_USERNAME", default="guest"),
+    config.get("AMQP_PASSWORD", default="guest"),
 )
-AMQP_SERVICE_HOST = config.get("AMQP_SERVICE_HOST", "localhost")
+AMQP_SERVICE_HOST = config.get("AMQP_SERVICE_HOST", default="localhost")
 
 
 def publish(connection, message):
