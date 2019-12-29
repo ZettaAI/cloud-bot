@@ -11,16 +11,16 @@ from .. import EXCHANGE_NAME
 
 def callback(ch, method, properties, body):
     print(" [x] %r:%r" % (method.routing_key, body))
-    storage_client = storage.Client()
-    bucket_name = "akhilesh-test2"
-    bucket = storage_client.create_bucket(bucket_name)
-    response = client.chat_postMessage(
-        channel="#general", text=f"{bucket.name} created!"
-    )
-    assert response["ok"]
+    # storage_client = storage.Client()
+    # bucket_name = "akhilesh-test2"
+    # bucket = storage_client.create_bucket(bucket_name)
+    # response = client.chat_postMessage(
+    #     channel="#general", text=f"{bucket.name} created!"
+    # )
+    # assert response["ok"]
 
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host="localhost"))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host="172.17.0.4"))
 channel = connection.channel()
 
 channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type="topic")
