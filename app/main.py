@@ -21,10 +21,19 @@ AMQP_CREDS = pika.credentials.PlainCredentials(
 AMQP_SERVICE_HOST = config.get("AMQP_SERVICE_HOST", default="localhost")
 
 
-def publish(connection, message):
-    channel = connection.channel()
+def publish(request):
+    try:
+        channel = request.app.state.exchange_cnxn.channel()
+    except:
+        request.app.state.exchange_cnxn = pika.BlockingConnection(
+            pika.ConnectionParameters(host=AMQP_SERVICE_HOST, credentials=AMQP_CREDS)
+        )
+        channel = request.app.state.exchange_cnxn.channel()
+    r_key = f"{request.state.json['event']['text'].split()[1]}.#"
     channel.exchange_declare(exchange="cloud_bot", exchange_type="topic")
-    channel.basic_publish(exchange="cloud_bot", routing_key="gcloud.#", body=message)
+    channel.basic_publish(
+        exchange="cloud_bot", routing_key=r_key, body=dumps(request.state.json)
+    )
 
 
 async def homepage(request: Request):
@@ -33,7 +42,7 @@ async def homepage(request: Request):
 
 async def mention(request: Request):
     print(request.state.json)
-    publish(request.app.state.exchange_cnxn, dumps(request.state.json))
+    publish(request)
     return Response()
 
 
