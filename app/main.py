@@ -8,7 +8,6 @@ from starlette.middleware import Middleware
 from starlette.applications import Starlette
 
 from . import endpoints
-from .events import publish
 from .messaging import get_ampq_connection
 from .middlewares import VerifySlackSignature
 

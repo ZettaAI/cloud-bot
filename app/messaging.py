@@ -2,7 +2,6 @@ from json import dumps
 
 import pika
 
-from .db import db
 from .slack import EventTypes
 
 from .config import AMQP_CREDS
@@ -22,8 +21,12 @@ def publish(request):
         request.app.state.exchange_cnxn = get_ampq_connection()
         channel = request.app.state.exchange_cnxn.channel()
 
-    event = request.state.json["event"]
-    cmd_txt = event["text"]
+    try:
+        event = request.state.json["event"]
+        cmd_txt = event["text"]
+    except KeyError:
+        print(dumps(event, indent=2))
+        return
     cmd_txt = (
         cmd_txt.split(" ", 1) if event["type"] == EventTypes.APP_MENTION else cmd_txt
     )
