@@ -10,6 +10,7 @@ from starlette.middleware import Middleware
 from starlette.applications import Starlette
 from starlette.datastructures import Secret
 
+from .slack import EventTypes
 from .middlewares import VerifySlackSignature
 
 config = Config("deploy.env")
@@ -29,8 +30,16 @@ def publish(request):
             pika.ConnectionParameters(host=AMQP_SERVICE_HOST, credentials=AMQP_CREDS)
         )
         channel = request.app.state.exchange_cnxn.channel()
-    r_key = f"{request.state.json['event']['text'].split()[1]}.#"
+
+    event = request.state.json["event"]
+    cmd_txt = event["text"]
+    cmd_txt = (
+        cmd_txt.split(" ", 1) if event["type"] == EventTypes.APP_MENTION else cmd_txt
+    )
+    r_key = f"{cmd_txt.split()[0]}.#"
     channel.exchange_declare(exchange="cloud_bot", exchange_type="topic")
+
+    event["user_cmd"] = cmd_txt
     channel.basic_publish(
         exchange="cloud_bot", routing_key=r_key, body=dumps(request.state.json)
     )
