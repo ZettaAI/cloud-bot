@@ -9,6 +9,6 @@ async def homepage(request: Request):
 
 
 async def mention(request: Request):
-    print(request.state.json)
+    # print(request.state.json)
     publish(request)
     return Response(request.state.json.get("challenge"))
