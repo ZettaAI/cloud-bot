@@ -26,6 +26,7 @@ def publish(request):
         event = request.state.json["event"]
         cmd_txt = event["text"]
     except KeyError:
+        # this event is not relevant so return
         return
     cmd_txt = (
         cmd_txt.split(" ", 1) if event["type"] == EventTypes.APP_MENTION else cmd_txt
