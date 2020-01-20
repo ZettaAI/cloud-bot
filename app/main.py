@@ -19,6 +19,7 @@ routes = [
 
 middleware = [Middleware(VerifySlackSignature)]
 app = Starlette(debug=config.DEBUG, routes=routes, middleware=middleware)
-app.state.exchange_cnxn = get_ampq_connection()
+app.state.amqp_cnxn = get_ampq_connection()
+app.state.amqp_channel = app.state.amqp_cnxn.channel()
 app.state.SLACK_SIGNING_SECRET = config.SLACK_SIGNING_SECRET
 
