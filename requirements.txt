@@ -1,3 +1,4 @@
+supervisor
 starlette
 uvicorn
 pika

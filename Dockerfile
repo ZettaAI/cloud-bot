@@ -16,4 +16,5 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
-COPY . ./    
+COPY . ./
+CMD ["supervisord", "-c", "supervisord.conf"]
