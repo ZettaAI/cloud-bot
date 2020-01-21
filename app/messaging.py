@@ -2,8 +2,8 @@ from json import dumps
 
 import pika
 
+from .db import add_event
 from .slack import EventTypes
-
 from .config import AMQP_CREDS
 from .config import AMQP_SERVICE_HOST
 from .utils import parse_slack_message
@@ -42,6 +42,8 @@ def publish(request):
     r_key = f"{cmd_txt.split()[0]}.#"
 
     event["user_cmd"] = cmd_txt
+    if not ("subtype" in event and event["subtype"] == EventTypes.BOT_MESSAGE.value):
+        add_event(event)
     # print(dumps(request.state.json, indent=2))
     channel.basic_publish(
         exchange="cloud_bot", routing_key=r_key, body=dumps(request.state.json)
