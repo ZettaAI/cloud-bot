@@ -1,7 +1,3 @@
-from json import dumps
-
-import pika
-
 from starlette.routing import Route
 from starlette.middleware import Middleware
 from starlette.applications import Starlette
@@ -22,4 +18,3 @@ app = Starlette(debug=config.DEBUG, routes=routes, middleware=middleware)
 app.state.amqp_cnxn = get_ampq_connection()
 app.state.amqp_channel = app.state.amqp_cnxn.channel()
 app.state.SLACK_SIGNING_SECRET = config.SLACK_SIGNING_SECRET
-

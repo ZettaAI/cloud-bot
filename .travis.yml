@@ -1,0 +1,24 @@
+sudo: true
+services:
+  docker
+
+stages:
+  - test
+python: 3.8
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+
+jobs:
+  include:
+  - stage: test
+    name: "Tests"
+    language: minimal
+    # before_script:
+    #   # request codecov to detect CI environment to pass through to docker
+    #   - ci_env=`bash <(curl -s https://codecov.io/env)`
+
+    script:
+      - docker build --tag zetta/cloud-bot:$TRAVIS_BRANCH . || travis_terminate 1
+      - docker run $ci_env --rm zetta/cloud-bot:$TRAVIS_BRANCH /bin/sh run_tests.sh

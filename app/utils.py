@@ -9,7 +9,7 @@ from starlette.requests import Request
 def verify_request(request: Request, req_bytes: bytes) -> bool:
     """
     See https://api.slack.com/docs/verifying-requests-from-slack
-    
+
     The request body is stored in request state because await can only be called once.
     JSON loads and dumps are not guaranteed to produce same strings
     so passing `req_bytes` is necessary.
