@@ -4,4 +4,3 @@ WORKDIR /usr/src/app
 COPY . ./
 RUN apt update \
     && pip install --no-cache-dir --upgrade -r requirements.txt
-CMD ["supervisord", "-c", "supervisord.conf"]

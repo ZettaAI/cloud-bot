@@ -4,6 +4,8 @@ from starlette.requests import Request
 from pika import BlockingConnection
 from pika.channel import Channel
 
+from .exceptions import IrrelevantEventException
+
 
 def get_ampq_connection() -> BlockingConnection:
     from pika import ConnectionParameters
@@ -37,6 +39,12 @@ def _get_cmd_and_routing_key(event: Dict) -> str:
     from .slack import EventTypes
     from .utils import parse_slack_message
 
+    try:
+        if event["subtype"] == EventTypes.BOT_MESSAGE.value:
+            raise IrrelevantEventException("This is a bot message event, ignored.")
+    except KeyError:
+        pass
+
     cmd_txt = event["text"]
     cmd_txt = (
         cmd_txt.split(" ", 1)[-1]
@@ -44,6 +52,9 @@ def _get_cmd_and_routing_key(event: Dict) -> str:
         else cmd_txt
     )
     event["user_cmd"] = parse_slack_message(cmd_txt)
+    if "help gt" in event["user_cmd"]:
+        # handle specialized workers explicitly
+        return "help-gt-workers.#"
     return f"{event['user_cmd'].split()[0]}.#"
 
 
@@ -53,7 +64,7 @@ def publish(request: Request) -> None:
     try:
         event = request.state.json["event"]
         r_key = _get_cmd_and_routing_key(event)
-    except KeyError:
+    except (IrrelevantEventException, KeyError):
         # this event is not relevant so ignore
         return
 

@@ -3,6 +3,7 @@ __pycache__/
 .coverage
 .pytest_cache/
 .tox/
+supervisord.log
 
 .devcontainer/
 *key.json
