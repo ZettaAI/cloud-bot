@@ -1,0 +1,3 @@
+{{- template "common.configmap-from-env" .Values.env }}
+{{- template "common.configmap-from-env" .Values.cloudBotServer.deployment.env }}
+{{- template "common.configmap-from-env" .Values.exampleBotWorkerDeployment.env }}

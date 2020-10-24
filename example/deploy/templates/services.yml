@@ -1,0 +1,1 @@
+{{- template "common.service" (dict "service" .Values.cloudBotServer.service "target" .Values.cloudBotServer.deployment.name) }}

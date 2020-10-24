@@ -1,0 +1,3 @@
+{{- template "common.hpa" .Values.cloudBotServer.deployment }}
+{{- template "common.hpa" .Values.exampleBotWorkerDeployment }}
+

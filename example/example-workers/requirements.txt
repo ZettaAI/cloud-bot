@@ -1,0 +1,7 @@
+git+https://github.com/ZettaAI/cloud-bot-workers.git#subdirectory=common
+slackclient
+click
+pika
+grpcio # TODO remove after moving permission management out of common
+google-cloud-firestore # TODO remove after moving permission management out of common
+supervisor

@@ -1,0 +1,98 @@
+secrets:
+- name: &Secrets secrets
+  files:
+    some-secret.json: |-
+      {
+        "type": "test",
+        "project_id": "test",
+        "private_key_id": "test",
+        "private_key": "test",
+        "client_email": "test",
+        "client_id": "test",
+      }
+
+
+cloudBotServer:
+  service:
+    enabled: &cloudBotServiceEnabled true
+    name: &cloudBotServiceName "cloud-bot"
+    annotations: {}
+    type: LoadBalancer
+    loadBalancerIP: <Reserved IP to receive from slack events API>
+    ports:
+    - port: 80
+      targetPort: &cloudBotServerPort 80
+      name: &cloudBotServerPortName http
+      protocol: TCP
+  deployment:
+    enabled: *cloudBotServiceEnabled
+    name: *cloudBotServiceName
+    helmRollOnUpgrade: true
+    nodeSelector:
+      cloud.google.com/gke-nodepool: server
+    command: [bash, -c, "supervisord -c supervisord.conf"]
+    image:
+      repository: <point to your bot-server docker image>
+      tag: "demo"
+      pullPolicy: Always
+    volumes: &commonVolumes
+    - name: *Secrets
+      secret:
+        secretName: *Secrets
+    volumeMounts: &commonVolumeMounts
+    - name: *Secrets
+      mountPath: /secrets/mount/path
+      readOnly: true
+    imagePullSecrets: []
+    env:
+    - name: "cloudbot-server"
+      vars:
+        DEBUG: false
+        SLACK_SIGNING_SECRET: <you get this from your slack app managment page>
+        SLACK_API_BOT_ACCESS_TOKEN: <you get this from your slack app managment page>
+        AMQP_USERNAME: test
+        AMQP_PASSWORD: test
+    replicaCount: 1
+    ports:
+    - name: *cloudBotServerPortName
+      protocol: TCP
+      containerPort: *cloudBotServerPort
+    resources:
+      requests:
+        cpu: 250m
+        memory: 500M
+    hpa:
+      enabled: false
+
+
+exampleBotWorkerDeployment:
+  enabled: true
+  name: "example-worker"
+  helmRollOnUpgrade: true
+  nodeSelector: {}
+  command: [bash, -c, "supervisord -c supervisord.conf"]
+  image:
+    repository: <point to your bot-worker docker image>
+    tag: "demo"
+    pullPolicy: Always
+  env:
+  - name: "example-worker"
+    vars:
+      SLACK_SIGNING_SECRET: <you get this from your slack app managment page>
+      SLACK_API_BOT_ACCESS_TOKEN: <you get this from your slack app managment page>
+      AMQP_USERNAME: test
+      AMQP_PASSWORD: test
+      MAIN_CMD_WORKER: 1 # set this var to enable a given worker
+      MATH_WORKER: 1
+      # add other variables as required
+  replicaCount: 1
+  ports:
+  - name: *cloudBotServerPortName
+    protocol: TCP
+    containerPort: *cloudBotServerPort
+  resources:
+    requests:
+      cpu: 250m
+      memory: 500M
+  hpa:
+    enabled: false

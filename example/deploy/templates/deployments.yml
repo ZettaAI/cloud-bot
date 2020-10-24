@@ -1,0 +1,2 @@
+{{- template "common.deployment" .Values.cloudBotServer.deployment }}
+{{- template "common.deployment" .Values.exampleBotWorkerDeployment }}
